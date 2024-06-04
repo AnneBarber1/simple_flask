@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  <title>Edit</title>
+{% endblock %}
+
+{% block body %}
+  <h2>Edit recipe:</h2> 
+  <form action="/recipes/edit/{{recipe.id}}/" method="POST">
+		Title: <input type="text" name="title" id="title" value="{{recipe.title}}"><br>
+		Recipe: <input type="text" name="description" id="description" value="{{recipe.description}}"><br>
+		<input type="submit" value="Save">
+	</form>
+{% endblock %}

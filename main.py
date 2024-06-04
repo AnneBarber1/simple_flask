@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_migrate import Migrate
@@ -11,14 +11,44 @@ db = SQLAlchemy(app) #call SQLAlchemy - link the application and database togeth
 migrate = Migrate(app, db) #use migration to implement changes in SQLAlchemy model to the actual database
 
 # Create some manual data instead of linking to an actual database
-all_recipes = [
-    {"title": "Recipe 1", "description": "Some ingredients for 1 recipe", "author": "Joey"}, 
-    {"title": "Recipe 2", "description": "Some ingredients for 2 recipe", "author": ""}
-]
+#all_recipes = [
+#    {"title": "Recipe 1", "description": "Some ingredients for 1 recipe", "author": "Joey"}, 
+#    {"title": "Recipe 2", "description": "Some ingredients for 2 recipe", "author": ""}
+#]
 
-@app.route("/recipes/")
+@app.route("/recipes/", methods=["GET","POST"])
 def recipes():
-    return render_template("recipes.html", recipes=all_recipes)
+    # Implement functionality to receive information from website user
+    if request.method == "POST": # if someone has added a new recipe
+        recipe_title=request.form["title"]
+        recipe_description=request.form["description"]
+        new_recipe = Recipe(title=recipe_title,description=recipe_description,author="Joey")
+        db.session.add(new_recipe)
+        db.session.commit()
+        return redirect("/recipes/") # refresh the page
+    else: # request is GET
+        all_recipes = Recipe.query.all() # print a list of all recipes
+        return render_template("recipes.html", recipes=all_recipes)
+    
+# Define a new route for deleting recipes
+@app.route("/recipes/delete/<int:id>/")
+def delete(id):
+    recipe = Recipe.query.get_or_404(id)
+    db.session.delete(recipe)
+    db.session.commit()
+    return redirect("/recipes/")
+
+# Define a new route for editing recipes
+@app.route("/recipes/edit/<int:id>/", methods=["GET","POST"])
+def edit(id):
+    recipe = Recipe.query.get_or_404(id)
+    if request.method == "POST": # if someone is editing the recipe
+        recipe.title=request.form["title"] # overwrite
+        recipe.description=request.form["description"] # overwrite
+        db.session.commit()
+        return redirect("/recipes") # refresh the page
+    else: # What happens when you click on the EDIT button
+        return render_template("edit.html", recipe=recipe)
 
 # Instead of using manual recipe data, we're going to define a model
 # that describes the structures of recipe data in our database 'db'
@@ -29,7 +59,7 @@ class Recipe(db.Model):
     title = db.Column(db.String(100), nullable=False, unique=True) 
     description = db.Column(db.Text, nullable=False) 
     author = db.Column(db.String(50), nullable=False) 
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) #automatically adds the date
 
     def __repr__(self):
         return "Recipe" + str(self.id)
