@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 
 app = Flask(__name__) #pass the Flask library to our variable 'app'
 
+# Linking to an actual database
 app.config["SQLALCHEMY_DATABASE_URI"] =  'sqlite:///recipes.db' #where the database is stored
 db = SQLAlchemy(app) #call SQLAlchemy - link the application and database together
 migrate = Migrate(app, db) #use migration to implement changes in SQLAlchemy model to the actual database
@@ -27,7 +28,7 @@ class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
     title = db.Column(db.String(100), nullable=False, unique=True) 
     description = db.Column(db.Text, nullable=False) 
-    author = db.Column(db.String(50)) 
+    author = db.Column(db.String(50), nullable=False) 
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
