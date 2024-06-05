@@ -65,9 +65,9 @@ class Recipe(db.Model):
         return "Recipe" + str(self.id)
 
 # Define a basic app decorator for the homepage
-#@app.route("/")
-#def hello():
-#    return "Hello, world!"
+@app.route("/")
+def hello():
+    return "Hello, world!"
 
 # Define a personalised, dynamic app decorator
 #@app.route("/home/<string:name>/") 
@@ -75,9 +75,9 @@ class Recipe(db.Model):
 #    return f"Hello, {name}!"
 
 # Define an app decorator that renders and displays an html template
-@app.route("/home/") 
-def home():
-    return render_template("index.html")
+#@app.route("/home/") 
+#def home():
+#    return render_template("index.html")
 
 # Run the app (using debugger mode)
 if __name__ == "__main__":
