@@ -67,7 +67,7 @@ app = Flask(__name__) #pass the Flask library to our variable 'app'
 # Define a basic app decorator for the homepage
 @app.route("/")
 def hello():
-    return("Hello, world!")
+    return("Hello, world! This is annes recipe website")
 
 # Define a personalised, dynamic app decorator
 #@app.route("/home/<string:name>/") 
