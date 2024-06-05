@@ -69,9 +69,8 @@ jobs:
     needs: build
     environment:
       name: 'Development'
-        #url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-        url: anne-recipes.azurewebsites.net 
-
+        url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+        
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
